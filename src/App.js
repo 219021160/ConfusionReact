@@ -1,26 +1,35 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { Component } from 'react';
 import logo from './logo.svg';
 
 import {Navbar, NavbarBrand} from 'reactstrap';
 
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
+import MenuComponent from './Components/MenuComponent.js';
 
-      <Navbar dark color="primary">
-        <div className="container">
+export default class App extends Component{
 
-          <NavbarBrand href="/">Ristorante Con Fusion</NavbarBrand>
+  render(){
+    return(
 
-        </div>
+      <div >
 
-      </Navbar>
-     
-    </div>
-  );
+        <Navbar dark color="primary" >
+          <div className="container">
+
+            <NavbarBrand href="/">Ristorante Con Fusion</NavbarBrand>
+
+          </div>
+        </Navbar>
+
+        <MenuComponent />
+
+      
+
+      </div>
+
+
+    );
+  }
 }
-
-export default App;
