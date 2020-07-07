@@ -6,7 +6,10 @@ import {Navbar, NavbarBrand} from 'reactstrap';
 
 import './App.css';
 
-import MenuComponent from './Components/MenuComponent.js';
+import MenuComponent from './Components/MenuComponent';
+
+import {DISHES, NAME} from './Shared/dishes';
+
 
 export default class App extends Component{
 
@@ -23,7 +26,7 @@ export default class App extends Component{
           </div>
         </Navbar>
 
-        <MenuComponent />
+        <MenuComponent dishes={DISHES}/>
 
       
 

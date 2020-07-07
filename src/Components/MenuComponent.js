@@ -1,83 +1,64 @@
 import React, {Component} from 'react';
 
-import {Media} from 'reactstrap';
+import {Card, CardImg, CardImgOverlay, CardText, CardTitle, CardBody} from 'reactstrap';
 
 export default class MenuComponent extends Component{
 
     constructor(props){
         super(props);
-        this.state={
-            dishes:[
-                {
-                    id: 0,
-                    name: 'Uthappizza',
-                    image: 'assets/images/uthappizza.png',
-                    category: 'mains',
-                    label: 'Hot',
-                    price: '4.99',
-                    description: 'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.'
-                },
-
-                {
-                    id: 1,
-                    name: 'Zucchipakoda',
-                    image: 'assets/images/zucchipakoda.png',
-                    category: 'appetizer',
-                    label: '',
-                    price: '1.99',
-                    description: 'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce'
-                },
-
-                {
-                    id: 2,
-                    name: 'Vadonut',
-                    image: 'assets/images/vadonut.png',
-                    category: 'appetizer',
-                    label: 'New',
-                    price: '1.99',
-                    description: 'A quintessential ConFusion experience, is it a vada or is it a donut?'
-                },
-
-                {
-                    id: 3,
-                    name: 'ElaiCheese Cake',
-                    image: 'assets/images/elaicheesecake.png',
-                    category: 'dessert',
-                    label: '',
-                    price: '2.99',
-                    description: 'A delectable, semi-sweet New York Style Cheese Cake, with Graham cracker crust and spiced with Indian cardamoms'
-                }
-
-            //end of dishes array
-            ]
+        this.state ={
+            selectedDish:null
         }
-    //end of constructor
     }
+
+    onDishSelecct(dish){
+        this.setState({selectedDish:dish});
+    }
+
+    renderDish(dish){
+        if (dish!=null){
+            return (
+                <Card>
+                    <CardImg width="100%" src={dish.image} alt={dish.name} />
+                    
+                    <CardBody>
+                        <CardTitle heading>{dish.name}</CardTitle>
+                        <CardText>{dish.description}</CardText>
+                    </CardBody>
+
+                </Card>
+            );
+
+        }else {
+            return (<div></div>);
+        }
+    }
+    
 
     render(){
     
-        const Menu = this.state.dishes.map( (dish) => (
+        const Menu = this.props.dishes.map( (dish) => (
             //perfom this
 
             //key neededs to be unique
-            <div key={dish.key} className="col-12 mt-5">
+            <div key={dish.key} className="col-12 col-md-5 m-1">
                 {/*'tag="li"' everything that follows will be a list item*/}
-                <Media tag = "li" >
+                <Card onClick={()=> this.onDishSelecct(dish)} >
                     {/* picture of dish */ }
-                    < Media left >
-                        <Media object src={dish.image} alt={dish.name}/>
-                    </Media >
+        
+                    <CardImg width="100%" src={dish.image} alt={dish.name}/>
+                   
+                    {/* content */}
+                    <CardImgOverlay>
+                        <CardTitle heading>{dish.name}</CardTitle>
+                    </CardImgOverlay>
 
-                    {/* content */ }
-                    < Media body className="ml-5" >
-                        <Media heading>{dish.name}</Media>
-                        <p>{dish.description}</p>
-                    </Media>
-                </Media >
+                </Card >
             </div >
 
 
          ) );
+
 
 
         return (
@@ -86,9 +67,10 @@ export default class MenuComponent extends Component{
 
                 {/* first row contains the menu list */}
                 <div className="row">
-                    <Media list>
-                        {Menu}
-                    </Media>
+                    {Menu}
+                </div>
+                <div className="row">
+                    {this.renderDish(this.state.selectedDish)}
                 </div>
                 
             </div>
