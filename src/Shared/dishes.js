@@ -193,36 +193,3 @@ export const DISHES =
         }
     ];
 
-export const NAME =[
-    {
-        id:0,
-        name : "me",
-        age:{
-            number:18
-        }
-    },
-
-    {
-        id:1,
-        name:'Hero',
-        age: {
-            number: 17
-        }
-    },
-
-    {
-        id:2,
-        name:"Zick",
-        age: {
-            number: 28
-        }
-    },
-
-    {
-        id:3,
-        name:"Nick",
-        age: {
-            number: 48
-        }
-    }
-];
