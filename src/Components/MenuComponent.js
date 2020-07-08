@@ -1,51 +1,55 @@
-import React, {Component} from 'react';
+import React from 'react';
 
 import {Card, CardImg, CardImgOverlay, CardTitle} from 'reactstrap';
 
 
-export default class MenuComponent extends Component{
+function RenderMenuItem({dish, onClick, ...props}){
+    return (
 
-    render(){
+        /*'tag="li"' everything that follows will be a list item*/ 
+        < Card onClick={()=> onClick(dish.id)}>
     
-        const Menu = this.props.dishes.map( (dish) => (
-            //perfom this
+            {/* picture of dish */}
+            < CardImg width="100%" src={ dish.image } alt = { dish.name } />
 
-            //key neededs to be unique
-            <div key={dish.key} className="col-12 col-md-5 m-1">
-                {/*'tag="li"' everything that follows will be a list item*/}
-                <Card onClick={()=>this.props.onClick(dish.id)} >
-                    {/* picture of dish */ }
-        
-                    <CardImg width="100%" src={dish.image} alt={dish.name}/>
-                   
-                    {/* content */}
-                    <CardImgOverlay>
-                        <CardTitle heading>{dish.name}</CardTitle>
-                    </CardImgOverlay>
+            {/* content */}
+            < CardImgOverlay >
+                <CardTitle>{dish.name}</CardTitle>
+            </CardImgOverlay >
 
-                </Card >
-            </div >
+        </Card >
+
+    );
+}
+    
+
+const MenuComponent = (props) =>{
+
+    const Menu = props.dishes.map((dish) => (
+        //perfom this
+        //key neededs to be unique
+        <div key={dish.id} className="col-12 col-md-5 m-1">
+            <RenderMenuItem dish={dish} onClick={props.onClick}/>
+        </div >
 
 
-         ) );
+    ));
 
 
+    return (
 
-        return (
+        <div className="container">
 
-            <div className="container">
-
-                <div className="row">
-                    {Menu}
-                </div>      
-                
+            <div className="row">
+                {Menu}
             </div>
 
-        );
-    }
+        </div>
 
+    );
 
-
-
-//end of class
 }
+
+
+export default MenuComponent;
+        

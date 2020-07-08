@@ -37,7 +37,7 @@ export default class DishDetailsComponent extends Component{
                         <CardImg width="100%" src={dish.image} alt={dish.name} />
 
                         <CardBody>
-                            <CardTitle heading>{dish.name}</CardTitle>
+                            <CardTitle>{dish.name}</CardTitle>
                             <CardText>{dish.description}</CardText>
                         </CardBody>
                     </Card>
@@ -56,11 +56,11 @@ export default class DishDetailsComponent extends Component{
         if (dish != null) {
             return (
 
-                <div key={dish.key} >
+                <div key={dish.id} >
                     <h4>Comments</h4>
                     <ul className="list-unstyled">
                         {dish.comments.map(comment => (
-                            <li>
+                            <li key={comment.id}>
                                 {comment.comment} <br /> <br />
                                 -- {comment.author}, {this.getDate(comment.date)}<br /> <br />
                             </li>
@@ -74,6 +74,7 @@ export default class DishDetailsComponent extends Component{
             return (<div></div>);
         }
     }
+
 
 
     render(){
