@@ -7,14 +7,20 @@ import FooterComponent from './FooterComponent';
 
 import HomeComponent from './HomeComponent';
 
-import { DISHES } from '../Shared/dishes';
+import ContactComponent from './ContactComponent';
 
 import MenuComponent from './MenuComponent';
 
 import DishDetails from './DishDetailsComponent';
 
 
+import { DISHES } from '../Shared/dishes';
+import { COMMENTS } from '../Shared/comments';
+import { LEADERS } from '../Shared/leaders';
+import { PROMOTIONS } from '../Shared/promotions';
+
 import {Switch, Route, Redirect} from 'react-router-dom';
+
 
 
 export default class MainComponent extends Component {
@@ -23,13 +29,11 @@ export default class MainComponent extends Component {
         super(props);
         this.state = {
             dishes:DISHES,
-            selectedDishID: null
+            comments:COMMENTS,
+            promotions:PROMOTIONS,
+            leaders:LEADERS
         }
 
-    }
-
-    onDishSelect(dishID) {
-        this.setState({ selectedDishID: dishID });
     }
 
     render() {
@@ -42,8 +46,15 @@ export default class MainComponent extends Component {
                <HeaderComponent />
 
                <Switch>
-                   <Route path="/home" component={()=><HomeComponent/>}/>
-                   <Route exact path="/menu" component={() => <MenuComponent dishes={this.state.dishes} onClick={(selectedDishID) => this.onDishSelect(selectedDishID)}/>} />
+                    {/* eslint-disable-next-line array-callback-return */}
+                    <Route path="/home" component={() => <HomeComponent dish={this.state.dishes.filter((dish) => dish.featured)[0]}
+                        promotion={this.state.promotions.filter((promo) => promo.featured)[0]}
+                        leader={this.state.leaders.filter((leader) => leader.featured)[0]} />}/>
+
+                   <Route exact path="/menu" component={() => <MenuComponent dishes={this.state.dishes} />} />
+
+                   <Route exact path="/contactus" component={()=><ContactComponent/>}/>
+                   
                    <Redirect to="/home" />
                </Switch>
 
@@ -52,7 +63,7 @@ export default class MainComponent extends Component {
                 {/* [0] tells filter to return only one item in this case 1 dish */}
                 {/* filter will return a dish of matching id */}
                 {/* eslint-disable-next-line array-callback-return */}
-                {/* <DishDetails selectedDish={this.state.dishes.filter((dish) => {if(dish.id===this.state.selectedDishID){return dish}})[0] }/> */}
+                <DishDetails selectedDish={this.state.dishes.filter((dish) => {if(dish.id===this.state.selectedDishID){return dish}})[0] }/>
 
 
                 <FooterComponent />
