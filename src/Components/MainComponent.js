@@ -1,8 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 
-import { Navbar, NavbarBrand } from 'reactstrap';
+import HeaderComponent from './HeaderComponent';
 
+import FooterComponent from './FooterComponent';
+
+import '../App.css';
 
 import { DISHES } from '../Shared/dishes';
 
@@ -31,15 +34,9 @@ export default class MainComponent extends Component {
 
             <div >
 
-                <Navbar dark color="primary" >
-                    <div className="container">
+               {/* header */}
+               <HeaderComponent />
 
-                        <NavbarBrand href="/">Ristorante Con Fusion</NavbarBrand>
-
-                    </div>
-                </Navbar>
-
-                
 
                 <MenuComponent dishes={this.state.dishes} onClick={(selectedDishID)=>this.onDishSelect(selectedDishID)} />
                 {/* [0] tells filter to return only one item in this case 1 dish */}
@@ -48,7 +45,7 @@ export default class MainComponent extends Component {
                 <DishDetails selectedDish={this.state.dishes.filter((dish) => {if(dish.id===this.state.selectedDishID){return dish}})[0] }/>
 
 
-
+                <FooterComponent />
             </div>
 
 
