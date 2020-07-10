@@ -11,7 +11,9 @@ import ContactComponent from './ContactComponent';
 
 import MenuComponent from './MenuComponent';
 
-import DishDetails from './DishDetailsComponent';
+import DishDetailsComponent from './DishDetailsComponent';
+
+import AboutComponent from './AboutComponent';
 
 
 import { DISHES } from '../Shared/dishes';
@@ -20,6 +22,8 @@ import { LEADERS } from '../Shared/leaders';
 import { PROMOTIONS } from '../Shared/promotions';
 
 import {Switch, Route, Redirect} from 'react-router-dom';
+
+
 
 
 
@@ -38,6 +42,16 @@ export default class MainComponent extends Component {
 
     render() {
 
+        const DISHWITHID = ({match})=> {
+            return (
+
+                <DishDetailsComponent selectedDish={this.state.dishes.filter((dish)=> dish.id === parseInt(match.params.dishid,10) )[0]}
+                    comments={this.state.comments.filter((comment) => comment.dishId === parseInt(match.params.dishid,10) )}
+                />
+
+            );
+        }
+
         return (
 
             <div >
@@ -46,25 +60,18 @@ export default class MainComponent extends Component {
                <HeaderComponent />
 
                <Switch>
-                    {/* eslint-disable-next-line array-callback-return */}
                     <Route path="/home" component={() => <HomeComponent dish={this.state.dishes.filter((dish) => dish.featured)[0]}
                         promotion={this.state.promotions.filter((promo) => promo.featured)[0]}
                         leader={this.state.leaders.filter((leader) => leader.featured)[0]} />}/>
 
                    <Route exact path="/menu" component={() => <MenuComponent dishes={this.state.dishes} />} />
 
+                   <Route path="/menu/:dishid" component={DISHWITHID} />
                    <Route exact path="/contactus" component={()=><ContactComponent/>}/>
+                   <Route exact path ="/aboutus" component={()=> <AboutComponent leaders={this.state.leaders}/>} />
                    
                    <Redirect to="/home" />
                </Switch>
-
-
-                {/* <MenuComponent dishes={this.state.dishes} onClick={(selectedDishID)=>this.onDishSelect(selectedDishID)} /> */}
-                {/* [0] tells filter to return only one item in this case 1 dish */}
-                {/* filter will return a dish of matching id */}
-                {/* eslint-disable-next-line array-callback-return */}
-                <DishDetails selectedDish={this.state.dishes.filter((dish) => {if(dish.id===this.state.selectedDishID){return dish}})[0] }/>
-
 
                 <FooterComponent />
             </div>
