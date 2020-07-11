@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col} from 'reactstrap';
+import { Breadcrumb, BreadcrumbItem, Button, Form, FormGroup, Label, Input, Col, FormFeedback} from 'reactstrap';
 import { Link } from 'react-router-dom';
+
 
 export default class ContactComponent extends Component {
     
@@ -13,10 +14,20 @@ export default class ContactComponent extends Component {
             email:'',
             agree:false,
             contactType:'Tel.',
-            message:''
+            message:'',
+            //tracking which element/field is being worked on
+            touched:{
+                firstname: false,
+                lastname: false,
+                telnum: false,
+                email: false,
+
+            }
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.validate = this.validate.bind(this);
+        this.handleBlur = this.handleBlur.bind(this);
     }
 
     handleInputChange (event){
@@ -35,7 +46,59 @@ export default class ContactComponent extends Component {
         //prevents any default behaviour such as going to the next page
         event.preventDefault();
     }
+
+    handleBlur = (field, event) => {
+        //change to true
+        this.setState({
+            touched : {...this.state.touched, [field]:true}
+        });
+    }
+
+    validate(firstname, lastname, telnum, email){
+        const errors = {
+            firstname: '',
+            lastname: '',
+            telnum: '',
+            email: '',
+        };
+
+        if(this.state.touched.firstname && firstname.length<3){
+            errors.firstname = 'first name should be >=3 characters';
+        } else if (this.state.touched.firstname && firstname.length < 10){
+            errors.firstname = 'first name should be <=10 characters';
+        }
+
+        if (this.state.touched.lastname && lastname.length < 3) {
+            errors.lastname = 'last name should be >=3 characters';
+        } else if (this.state.touched.firstname && lastname.length < 10) {
+            errors.lastname = 'last name should be <=10 characters';
+        }
+
+        //the regexpr contains characters/alphabets
+        const reg = /^\d+$/;
+
+        //reg.test(param) returns a boolean indication wherethere or not
+        //the set of characters exists in param or not
+        if (this.state.touched.telnum && !reg.test(telnum)) {
+            errors.firstname = 'Tel. Number should contain only numbers';
+        }
+
+        if (this.state.touched.email && email.split('').filter(chr => chr==='@').length !==1) {
+            errors.firstname = 'Email should contain the @ sign';
+        } else
+        
+        return errors;
+    
+        //end of validate
+    }
+
+    
+
     render(){
+
+        const errors = this.validate(this.state.firstname, this.state.lastname, this.state.telnum, this.state.email);
+
+        
 
         return (
             <div className="container">
@@ -73,9 +136,9 @@ export default class ContactComponent extends Component {
                     </div>
                     <div className="col-12 col-sm-11 offset-sm-1">
                         <div className="btn-group" role="group">
-                            <a role="button" className="btn btn-primary" href="tel:+85212345678"><i className="fa fa-phone"></i> Call</a>
-                            <a role="button" className="btn btn-info"><i className="fa fa-skype"></i> Skype</a>
-                            <a role="button" className="btn btn-success" href="mailto:confusion@food.net"><i className="fa fa-envelope-o"></i> Email</a>
+                            <Link to="/" role="button" className="btn btn-primary" href="tel:+85212345678"><i className="fa fa-phone"></i> Call</Link>
+                            <Link to="/" role="button" className="btn btn-info"><i className="fa fa-skype"></i> Skype</Link>
+                            <Link to="/" role="button" className="btn btn-success" href="mailto:confusion@food.net"><i className="fa fa-envelope-o"></i> Email</Link>
                         </div>
                     </div>
                 </div>
@@ -92,28 +155,36 @@ export default class ContactComponent extends Component {
                             <FormGroup row>
                                 <Label htmlfor="firstname" md={2}>First Name</Label>
                                 <Col md={10}>
-                                    <Input name="firstname" type="text" id="firstname" placeholder="First Name" value={this.state.firstname} onChange={this.handleInputChange} />
+                                    <Input name="firstname" type="text" id="firstname" placeholder="First Name" value={this.state.firstname} onChange={this.handleInputChange} onBlur={()=>this.handleBlur('firstname')} valid={errors.firstname === ''}
+                                        invalid={errors.firstname !== ''} />
+                                    <FormFeedback>{errors.firstname}</FormFeedback>
                                 </Col>
                             </FormGroup>
                             {/* FormGroup gets element in one row/groups elements */}
                             <FormGroup row>
                                 <Label htmlfor="lastname" md={2}>Last Name</Label>
                                 <Col md={10}>
-                                    <Input name="lastname" type="text" id="lastname" placeholder="Last Name" value={this.state.lastname} onChange={this.handleInputChange} />
+                                    <Input name="lastname" type="text" id="lastname" placeholder="Last Name" value={this.state.lastname} onChange={this.handleInputChange} onBlur={()=>this.handleBlur('lastname')} valid={errors.lastname === ''}
+                                        invalid={errors.lastname !== ''} />
+                                    <FormFeedback>{errors.lastname}</FormFeedback>
                                 </Col>
                             </FormGroup>
                             {/* FormGroup gets element in one row/groups elements */}
                             <FormGroup row>
                                 <Label htmlfor="telnum" md={2}>Tel.</Label>
                                 <Col md={10}>
-                                    <Input name="telnum" type="text" id="telnum" placeholder="Telephone Number" value={this.state.telnum}  onChange={this.handleInputChange} />
+                                    <Input name="telnum" type="text" id="telnum" placeholder="Telephone Number" value={this.state.telnum} onChange={this.handleInputChange} onBlur={()=>this.handleBlur('telnum')} valid={errors.telnum === ''}
+                                        invalid={errors.telnum !== ''} />
+                                    <FormFeedback>{errors.telnum}</FormFeedback>
                                 </Col>
                             </FormGroup>
                             {/* FormGroup gets element in one row/groups elements */}
                             <FormGroup row>
                                 <Label htmlfor="email" md={2}>Email</Label>
                                 <Col md={10}>
-                                    <Input name="email" type="text" id="email" placeholder="Email address" value={this.state.email}  onChange={this.handleInputChange}/>
+                                    <Input name="email" type="text" id="email" placeholder="Email address" value={this.state.email} onChange={this.handleInputChange} onBlur={()=>this.handleBlur('email')} valid={errors.email === ''}
+                                        invalid={errors.email !== ''}/>
+                                    <FormFeedback>{errors.email}</FormFeedback>
                                 </Col>
                             </FormGroup>
                             {/* FormGroup gets element in one row/groups elements */}
