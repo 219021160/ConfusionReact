@@ -15,38 +15,34 @@ import DishDetailsComponent from './DishDetailsComponent';
 
 import AboutComponent from './AboutComponent';
 
-
-import { DISHES } from '../Shared/dishes';
-import { COMMENTS } from '../Shared/comments';
-import { LEADERS } from '../Shared/leaders';
-import { PROMOTIONS } from '../Shared/promotions';
-
-import {Switch, Route, Redirect} from 'react-router-dom';
+import {connect} from 'react-redux';
 
 
+import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
+
+//map state properties to props in component
+const mapStateToProps = state => {
+
+    return {
+        dishes: state.dishes,
+        comments: state.comments,
+        promotions: state.promotions,
+        leaders: state.leaders
+    };
+
+}
 
 
+class MainComponent extends Component {
 
-export default class MainComponent extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            dishes:DISHES,
-            comments:COMMENTS,
-            promotions:PROMOTIONS,
-            leaders:LEADERS
-        }
-
-    }
 
     render() {
 
         const DISHWITHID = ({match})=> {
             return (
 
-                <DishDetailsComponent selectedDish={this.state.dishes.filter((dish)=> dish.id === parseInt(match.params.dishid,10) )[0]}
-                    comments={this.state.comments.filter((comment) => comment.dishId === parseInt(match.params.dishid,10) )}
+                <DishDetailsComponent selectedDish={this.props.dishes.filter((dish)=> dish.id === parseInt(match.params.dishid,10) )[0]}
+                    comments={this.props.comments.filter((comment) => comment.dishId === parseInt(match.params.dishid,10) )}
                 />
 
             );
@@ -60,15 +56,15 @@ export default class MainComponent extends Component {
                <HeaderComponent />
 
                <Switch>
-                    <Route path="/home" component={() => <HomeComponent dish={this.state.dishes.filter((dish) => dish.featured)[0]}
-                        promotion={this.state.promotions.filter((promo) => promo.featured)[0]}
-                        leader={this.state.leaders.filter((leader) => leader.featured)[0]} />}/>
+                    <Route path="/home" component={() => <HomeComponent dish={this.props.dishes.filter((dish) => dish.featured)[0]}
+                        promotion={this.props.promotions.filter((promo) => promo.featured)[0]}
+                        leader={this.props.leaders.filter((leader) => leader.featured)[0]} />}/>
 
-                   <Route exact path="/menu" component={() => <MenuComponent dishes={this.state.dishes} />} />
+                   <Route exact path="/menu" component={() => <MenuComponent dishes={this.props.dishes} />} />
 
                    <Route path="/menu/:dishid" component={DISHWITHID} />
                    <Route exact path="/contactus" component={()=><ContactComponent/>}/>
-                   <Route exact path ="/aboutus" component={()=> <AboutComponent leaders={this.state.leaders}/>} />
+                   <Route exact path ="/aboutus" component={()=> <AboutComponent leaders={this.props.leaders}/>} />
                    
                    <Redirect to="/home" />
                </Switch>
@@ -80,3 +76,7 @@ export default class MainComponent extends Component {
         );
     }
 }
+
+
+
+export default withRouter(connect(mapStateToProps)(MainComponent));
