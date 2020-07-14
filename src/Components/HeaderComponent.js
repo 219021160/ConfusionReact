@@ -86,7 +86,7 @@ export default class HeaderComponent extends Component{
                 {/* modal for sign in*/}
                 <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                     
-                    <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
+                    <ModalHeader toggle={() => this.setState({ isModalOpen: false })}>Login</ModalHeader>
 
                     <ModalBody className="m-2">
                         {/* uncontrolled form */}

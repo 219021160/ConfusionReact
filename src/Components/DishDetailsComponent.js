@@ -1,17 +1,42 @@
 import React, {Component} from 'react';
 
-import { Card, CardImg, CardText, CardTitle, CardBody } from 'reactstrap';
+import { Card, CardImg, CardText, CardTitle, CardBody, Modal, ModalBody, ModalHeader } from 'reactstrap';
 
 import {format} from 'date-fns';
 
 import {Breadcrumb, BreadcrumbItem} from 'reactstrap';
 
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+
+import { Button, Label, Col, Row } from 'reactstrap';
+
+import { Control, LocalForm, Errors } from 'react-redux-form'; 
+
+
+//validation
+const required = val => val && val.length;
+
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+
+const minLength = (len) => (val) => val && (val.length >= len);
+
 
 export default class DishDetailsComponent extends Component{
     constructor(props){
         super(props);
-        this.state={}
+        this.state={
+            isModalOpen: false,
+        }
+        this.toggleModal = this.toggleModal.bind(this);
+    };
+
+    toggleModal() {
+        this.setState({ isModalOpen: !this.isModalOpen });
+    }
+
+    onSubmit=(values)=>{
+        alert(JSON.stringify(values));
+        alert(JSON.stringify(values.firstname));
     }
 
     getDate = (date)=>{
@@ -79,6 +104,7 @@ export default class DishDetailsComponent extends Component{
         }
     }
 
+    
 
 
     render(){
@@ -106,9 +132,79 @@ export default class DishDetailsComponent extends Component{
             
                     <div className="col-12 col-md-5 m-1">
                         {this.renderComments(this.props.comments)}
+                        <Button onClick={this.toggleModal} className="btn btn-light btn-outline-dark"><i className="fa fa-pencil "></i>{' '}Submit Comment</Button>
                     </div>
 
                 </div>
+
+                <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+
+                    <ModalHeader toggle={() => this.setState({ isModalOpen: false })}>Submit Comment</ModalHeader>
+
+                    <ModalBody>
+                        <LocalForm onSubmit={(values)=>this.onSubmit(values)}>
+
+                            <Row className="mt-3">
+                                <Col xs={{size:12}}>
+                                <Label htmlFor="rating">Rating</Label>
+                                </Col>
+                                <Col xs={{ size: 12 }}>
+                                    <Control.select defaultValue={1} model=".rating" name="rating" id="rating" className="form-control" >
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </Control.select>
+                                </Col>
+                            </Row>
+
+                            <Row>
+                                <Col xs={{ size: 12 }}>
+                                    <Label htmlFor="firstname">Your Name</Label>
+                                </Col>
+                                <Col xs={{ size: 12 }}>
+                                    <Control.text model=".firstname" name="firstname" id="firstname" placeholder="Your Name" className="form-control"
+                                        validators={{
+                                            required, minLength: minLength(3), maxLength: maxLength(10)
+                                        }}/>
+                                        <Errors className="text-danger" model=".firstname" show="touched" messages={{
+                                            //assuming that they are not met
+                                            required: 'Required ',
+                                            minLength: ' Must be greater than 2 characters ',
+                                            maxLength: ' Must be 10 characters or less '
+                                        }} />
+                                </Col>
+                                
+                            </Row>
+
+                            <Row className="mt-3">
+                                <Col xs={{ size: 12 }}>
+                                    <Label htmlFor="comment">Comment</Label>
+                                </Col>
+                                <Col xs={{ size: 12 }}>
+                                    <Control.textarea rows={6} model=".comment" name="comment" id="comment" placeholder="Type your comment here..." className="form-control"
+                                        validators={{
+                                            required
+                                        }} />
+                                    <Errors className="text-danger" model=".firstname" show="touched" messages={{
+                                        //assuming that they are not met
+                                        required: 'Required  '
+                                    }} />
+                                </Col>
+                            </Row>
+
+                            <Row className="mt-3">
+                                <Col xs={{ size: 12 }}>
+                                    <Button type="submit" color="primary" >Submit</Button>
+                                </Col>
+                            </Row>
+
+                        </LocalForm>
+                    </ModalBody>
+                </Modal>
+
+                
                                       
             </div>
         );
