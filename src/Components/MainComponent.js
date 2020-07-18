@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { Component, Fragment } from 'react';
 
-
 import HeaderComponent from './HeaderComponent';
 
 import FooterComponent from './FooterComponent';
@@ -22,6 +21,8 @@ import {Switch, Route, Redirect, withRouter} from 'react-router-dom';
 
 import { addComment, fetchDishes} from '../Redux/ActionCreators';
 
+import { actions } from 'react-redux-form';
+
 
 //map state properties to props in component
 //to get access to state
@@ -40,7 +41,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) =>{
     return ({
         addComment: (dishId, rating, author, comment) => dispatch(addComment(dishId, rating, author, comment)),
-        fetchDishes: () => { dispatch(fetchDishes()) }
+        fetchDishes: () => { dispatch(fetchDishes()) },
+        //'feedback' alias to initialfeedback state
+        resetFeedbackForm: () => { dispatch(actions.reset('feedback')) }
     });
 };
 
@@ -88,7 +91,7 @@ class MainComponent extends Component {
                    <Route exact path="/menu" component={() => <MenuComponent dishes={this.props.dishes.dishes} />} />
 
                    <Route path="/menu/:dishid" component={DISHWITHID} />
-                   <Route exact path="/contactus" component={()=><ContactComponent/>}/>
+                    <Route exact path="/contactus" component={() => <ContactComponent resetFeedbackForm={this.props.resetFeedbackForm} />}/>
                    <Route exact path ="/aboutus" component={()=> <AboutComponent leaders={this.props.leaders}/>} />
                    
                    <Redirect to="/home" />
