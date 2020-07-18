@@ -4,6 +4,9 @@ import {Card, CardImg, CardImgOverlay, CardTitle, Breadcrumb, BreadcrumbItem} fr
 
 import {Link} from 'react-router-dom';
 
+import { Loading } from './LoadingComponent';
+
+
 function RenderMenuItem({dish, onClick, ...props}){
     return (
 
@@ -27,15 +30,44 @@ function RenderMenuItem({dish, onClick, ...props}){
 
 const MenuComponent = (props) =>{
 
-    const Menu = props.dishes.map((dish) => (
-        //perfom this
-        //key neededs to be unique
-        <div key={dish.id} className="col-12 col-md-5 m-1">
-            <RenderMenuItem dish={dish}/>
-        </div >
+    const Menu = props.dishes.map((dish) => {
+        
+        if (props.dishes.isLoading) {
+            return (
+                <div className="container">
+                    <div className="row">
+                     <Loading />
+                 </div>
+                </div>
+            );
+        }
+        else if (props.dishes.errMess) {
+         return (
+                <div className="container">
+                    <div className="row">
+                        <div className="col-12">
+                            <h4>{props.dishes.errMess}</h4>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        else {
+
+            return (
+                //perform this
+                //key neededs to be unique
+                <div key={dish.id} className="col-12 col-md-5 m-1">
+                    <RenderMenuItem dish={dish} />
+                </div >
+            );
+
+        }
+
+        
 
 
-    ));
+});
 
 
     return (

@@ -12,6 +12,9 @@ import { Button, Label, Col, Row } from 'reactstrap';
 
 import { Control, LocalForm, Errors } from 'react-redux-form'; 
 
+import { Loading } from './LoadingComponent';
+
+let DISHNAME = '';
 
 //validation
 const required = val => val && val.length;
@@ -28,6 +31,7 @@ export default class DishDetailsComponent extends Component{
             isModalOpen: false,
         }
         this.toggleModal = this.toggleModal.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
     };
 
     toggleModal() {
@@ -35,8 +39,12 @@ export default class DishDetailsComponent extends Component{
     }
 
     onSubmit=(values)=>{
-        alert(JSON.stringify(values));
-        alert(JSON.stringify(values.firstname));
+
+        this.props.addComment(this.props.selectedDish.dishid, values.rating, values.author, values.comment);
+
+        this.setState({ isModalOpen: !this.isModalOpen });
+        
+        
     }
 
     getDate = (date)=>{
@@ -59,24 +67,39 @@ export default class DishDetailsComponent extends Component{
 
     renderDish(dish) {
         if (dish != null) {
+            //DISHNAME = JSON.stringify(dish.name); 
             return (
+                
  
                 <div key={dish.key} >
                     <Card >
                         <CardImg width="100%" src={dish.image} alt={dish.name} />
 
                         <CardBody>
-                            <CardTitle>{dish.name}</CardTitle>
+                            <CardTitle>{DISHNAME}</CardTitle>
                             <CardText>{dish.description}</CardText>
                         </CardBody>
                     </Card>
-                </div>
-                
-
+                </div>       
             );
 
-        } else {
-            return (<div></div>);
+        } else if (this.props.isLoading) {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <Loading />
+                    </div>
+                </div>
+            );
+        }
+        else if (this.props.errMess) {
+            return (
+                <div className="container">
+                    <div className="row">
+                        <h4>{this.props.errMess}</h4>
+                    </div>
+                </div>
+            );
         }
     }
 
@@ -96,12 +119,21 @@ export default class DishDetailsComponent extends Component{
                         ))}
                     </ul>
                 </div>
+              //  this.props.addcomment, this.props.dishid
 
             );
 
         } else {
             return (<div></div>);
         }
+    }
+
+    componentWillMount(dish = this.props.selectedDish){
+
+        if (dish != null) {
+            DISHNAME = dish.name;
+        }
+
     }
 
     
@@ -118,7 +150,8 @@ export default class DishDetailsComponent extends Component{
                             <Link to="/menu" >Menu</Link>
                         </BreadcrumbItem>
                         <BreadcrumbItem active>
-                            {this.props.selectedDish.name}
+                            {DISHNAME}
+                            {/* {this.props.selectedDish.name} */}
                         </BreadcrumbItem>
                     </Breadcrumb>
                 </div>
@@ -126,14 +159,14 @@ export default class DishDetailsComponent extends Component{
 
                 <div className="row">
                     <div className="col-12 col-md-5 m-1">
-                        <h3>Dish Details : {this.props.selectedDish.name}</h3>
+                        {DISHNAME}
                         {this.renderDish(this.props.selectedDish)}
                     </div>
             
                     <div className="col-12 col-md-5 m-1">
                         {this.renderComments(this.props.comments)}
                         <Button onClick={this.toggleModal} className="btn btn-light btn-outline-dark"><i className="fa fa-pencil "></i>{' '}Submit Comment</Button>
-                    </div>
+                    </div>  
 
                 </div>
 
@@ -142,7 +175,7 @@ export default class DishDetailsComponent extends Component{
                     <ModalHeader toggle={() => this.setState({ isModalOpen: false })}>Submit Comment</ModalHeader>
 
                     <ModalBody>
-                        <LocalForm onSubmit={(values)=>this.onSubmit(values)}>
+                        <LocalForm onSubmit={(values)=>this.onSubmit(values)} addCommentt={this.props.addComment} >
 
                             <Row className="mt-3">
                                 <Col xs={{size:12}}>
@@ -161,14 +194,14 @@ export default class DishDetailsComponent extends Component{
 
                             <Row>
                                 <Col xs={{ size: 12 }}>
-                                    <Label htmlFor="firstname">Your Name</Label>
+                                    <Label htmlFor="author">Your Name</Label>
                                 </Col>
                                 <Col xs={{ size: 12 }}>
-                                    <Control.text model=".firstname" name="firstname" id="firstname" placeholder="Your Name" className="form-control"
+                                    <Control.text model=".author" name="author" id="author" placeholder="Your Name" className="form-control"
                                         validators={{
                                             required, minLength: minLength(3), maxLength: maxLength(10)
                                         }}/>
-                                        <Errors className="text-danger" model=".firstname" show="touched" messages={{
+                                        <Errors className="text-danger" model=".author" show="touched" messages={{
                                             //assuming that they are not met
                                             required: 'Required ',
                                             minLength: ' Must be greater than 2 characters ',
